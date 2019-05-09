@@ -96,14 +96,14 @@ public class DataFaker implements ServletContextInitializer {
         log.info("    Creating ItemsRental...");
         List<ItemRental> itemRentals = new ArrayList<>();
         for (int i = 0; i < (dataSize / 8); i++) {
-            User user = getRandomUser(users);
+            User user = getRandomFromList(users);
             itemRentalFaker.createItems(itemRentals, user, dataSize / 15);
         }
 
         log.info("    Creating ItemsSale...");
         List<ItemSale> itemSales = new ArrayList<>();
         for (int i = 0; i < (dataSize / 8); i++) {
-            User user = getRandomUser(users);
+            User user = getRandomFromList(users);
             itemSaleFaker.createItems(itemSales, user, dataSize / 15);
         }
 
@@ -127,8 +127,8 @@ public class DataFaker implements ServletContextInitializer {
 
         log.info("    Creating Offers...");
         for (int i = 0; i < (dataSize / 3); i++) {
-            User user = getRandomUser(users);
-            ItemRental itemRental = getRandomItem(itemRentals);
+            User user = getRandomFromList(users);
+            ItemRental itemRental = getRandomFromList(itemRentals);
 
             LocalDateTime start = timeFaker.rndTime();
             LocalDateTime end = timeFaker.rndTimeAfter(start);
@@ -149,7 +149,7 @@ public class DataFaker implements ServletContextInitializer {
         log.info("    Interact with Offers...");
         List<Offer> offers = (List<Offer>) offerRepo.findAll();
         for (int i = 0; i < (dataSize / 6); i++) {
-            Offer offer = getRandomOffer(offers);
+            Offer offer = getRandomFromList(offers);
             if (!(offer.isAccept() || offer.isDecline())) {
                 try {
                     if (faker.number().numberBetween(0, 1) == 1) {
@@ -170,15 +170,7 @@ public class DataFaker implements ServletContextInitializer {
         log.info("Done!");
     }
 
-    private User getRandomUser(List<User> users) {
-        return users.get(faker.number().numberBetween(0, users.size() - 1));
-    }
-
-    private ItemRental getRandomItem(List<ItemRental> itemRentals) {
-        return itemRentals.get(faker.number().numberBetween(0, itemRentals.size() - 1));
-    }
-
-    private Offer getRandomOffer(List<Offer> offers) {
-        return offers.get(faker.number().numberBetween(0, offers.size() - 1));
+    private <T> T getRandomFromList(List<T> list) {
+        return list.get(faker.number().numberBetween(0, list.size() - 1));
     }
 }
